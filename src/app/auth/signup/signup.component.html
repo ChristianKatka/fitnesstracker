@@ -1,0 +1,29 @@
+<section class="signup-form">
+    <!-- main axis, cross axis #means Local reference-->
+    <form fxLayout="column" fxLayoutAlign="center center" #f="ngForm" (ngSubmit)="onSubmit(f)">
+        <mat-form-field>
+            <input type="email" matInput placeholder="Your email" ngModel name="email" email required
+            #emailInput="ngModel">
+            <!-- required validator error -->
+            <mat-error *ngIf="emailInput.hasError('required')">Field must not be empty.</mat-error>
+            <!-- Email field is invalid still somehow -->
+            <mat-error *ngIf="!emailInput.hasError('required')">Email is invalid.</mat-error>
+        </mat-form-field>
+        <mat-form-field hintLabel="Should be at least 6 characters long.">
+            <input type="password" matInput placeholder="Your password" ngModel name="password" required minlength="6"
+                #pwInput="ngModel">
+            <!-- #pwInput. USERS password input-->
+            <!-- ? means that if value is null we dont get error -->
+            <mat-hint align="end"> {{ pwInput.value?.length }} / 6</mat-hint>
+        </mat-form-field>
+        <button type="submit" mat-raised-button color="primary">Submit</button>
+    </form>
+</section>
+
+
+<!-- <section id="container">
+    <div id="child1" class="child"></div>
+    <div id="child2" class="child"></div>
+    <div id="child3" class="child"></div>
+
+</section> -->

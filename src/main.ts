@@ -1,3 +1,7 @@
+
+// hammerjs will be included to the final bundle (product)
+import 'hammerjs';
+
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 

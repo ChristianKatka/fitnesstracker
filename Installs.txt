@@ -1,0 +1,14 @@
+
+ng add @angular/material
+
+// gesture support for mobile devices. ADD it to the main bundle so it will be usable to end user.(includes hammer.js to the BUILD)
+npm i --save hammerjs
+
+
+//when using ng g c error occures because you have to module.ts fix:
+ng g c name --module app.module
+
+
+// responsiivinen layout hommeli
+npm i @angular/flex-layout --save
+
