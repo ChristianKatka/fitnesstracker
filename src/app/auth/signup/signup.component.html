@@ -1,9 +1,9 @@
 <section class="signup-form">
     <!-- main axis, cross axis #means Local reference-->
-    <form fxLayout="column" fxLayoutAlign="center center" #f="ngForm" (ngSubmit)="onSubmit(f)">
+    <form fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" #f="ngForm" (ngSubmit)="onSubmit(f)">
         <mat-form-field>
             <input type="email" matInput placeholder="Your email" ngModel name="email" email required
-            #emailInput="ngModel">
+                #emailInput="ngModel">
             <!-- required validator error -->
             <mat-error *ngIf="emailInput.hasError('required')">Field must not be empty.</mat-error>
             <!-- Email field is invalid still somehow -->
@@ -16,14 +16,16 @@
             <!-- ? means that if value is null we dont get error -->
             <mat-hint align="end"> {{ pwInput.value?.length }} / 6</mat-hint>
         </mat-form-field>
-        <button type="submit" mat-raised-button color="primary">Submit</button>
+        <mat-form-field>
+            <!-- max date that can be picked (have to be 18y old) -->
+            <input matInput placeholder="Your birth date" [matDatepicker]="picker" [max]="maxDate" ngModel name="birthdate"
+                required>
+            <!-- matSuffix provides right type of styling -->
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-checkbox ngModel name="agree" required labelPosition="before" color="primary">Agree terms and conditions
+        </mat-checkbox>
+        <button type="submit" mat-raised-button color="primary" [disabled]="f.invalid">Submit</button>
     </form>
 </section>
-
-
-<!-- <section id="container">
-    <div id="child1" class="child"></div>
-    <div id="child2" class="child"></div>
-    <div id="child3" class="child"></div>
-
-</section> -->

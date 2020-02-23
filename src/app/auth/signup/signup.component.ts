@@ -8,9 +8,15 @@ import { NgForm } from '@angular/forms';
 })
 export class SignupComponent implements OnInit {
 
+// Biggest date you can pick from date picker (have to be 18y old)
+  maxDate
+
   constructor() { }
 
   ngOnInit(): void {
+    this.maxDate = new Date();
+    // Get todays date 18 years ago
+    this.maxDate.setFullYear(this.maxDate.getFullYear() - 18);
   }
 
   /** Submitted data from angular form
