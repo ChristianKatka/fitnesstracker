@@ -36,7 +36,7 @@ import { StopTrainingComponent } from './training/current-training/stop-training
     WelcomeComponent,
     HeaderComponent,
     SidenavListComponent,
-    // Stop training pop up that asks are you sure
+    // Stop training pop up that asks: are you sure
     StopTrainingComponent
   ],
   imports: [
