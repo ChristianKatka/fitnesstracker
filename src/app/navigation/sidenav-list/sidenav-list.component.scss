@@ -1,0 +1,14 @@
+a {
+  text-decoration: none;
+  color: white;
+}
+
+a:hover {
+  color: lightgray;
+}
+
+// responsiivisessa navigointi palkissa iconi ja teksti ei ole vierekkäin
+.nav-caption {
+  display: inline-block;
+  padding-left: 6px;
+}
