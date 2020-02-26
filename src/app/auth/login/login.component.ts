@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -10,8 +11,11 @@ export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
+  /**
+   * Validation done in ts file instead in html
+   */
   ngOnInit(): void {
     this.loginForm = new FormGroup({
       email: new FormControl('', {
@@ -23,7 +27,10 @@ export class LoginComponent implements OnInit {
 
 
   onSubmit() {
-    console.log(this.loginForm);
+    this.authService.login({
+      email: this.loginForm.value.email,
+      password: this.loginForm.value.password 
+    });
   }
 
 }
