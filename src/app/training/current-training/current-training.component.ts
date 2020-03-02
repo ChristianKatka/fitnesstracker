@@ -1,8 +1,9 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 // Need to import pop up dialog
 import { MatDialog } from '@angular/material/dialog';
 // Pop up dialog to show
 import { StopTrainingComponent } from './stop-training.component';
+import { TrainingService } from '../training.service';
 
 
 
@@ -13,35 +14,35 @@ import { StopTrainingComponent } from './stop-training.component';
 })
 export class CurrentTrainingComponent implements OnInit {
 
-  @Output() trainingExit = new EventEmitter<any>();
-
-
   // renders progress on graphical spinner
   progress = 0;
   timer;
 
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog, private trainingService: TrainingService) { }
 
   ngOnInit(): void {
     this.startOrResumeTimer();
   }
 
-  startOrResumeTimer() {
 
-    /**Timer starts to run when user comes to this component
-     * 
-     * if progress gets to 100% timer will be stopped
-     */
+  /**Timer starts to run when user comes to this component
+   * 
+   * if progress gets to 100% timer will be stopped
+   */
+  startOrResumeTimer() {
+    // get the exercise user chose and turn the duration into milliseconds
+    const step = this.trainingService.getRunningExercise().duration / 100 * 1000;
     this.timer = setInterval(() => {
-      this.progress = this.progress + 5;
+      this.progress = this.progress + 1;
       if (this.progress >= 100) {
+        this.trainingService.completeExercise();
         clearInterval(this.timer);
       }
-    }, 1000)
+    }, step);
 
   }
 
-  /** When user presses stop training button pop up dialog opens "Are you sure" 
+  /** When user presses stop training button. Pop up dialog opens "Are you sure" 
    * 
    * StopTrainingComponent: injection MAT_DIALOG_DATA receives second parameter so data can be send to pop up dialog
    * 
@@ -58,8 +59,7 @@ export class CurrentTrainingComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       // If user pressed YES button to exit training
       if (result) {
-        // new-training.component.html Listens this emit call
-        this.trainingExit.emit();
+        this.trainingService.cancelExercise(this.progress);
       }
       else {
         this.startOrResumeTimer();

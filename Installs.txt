@@ -5,10 +5,10 @@ ng add @angular/material
 npm i --save hammerjs
 
 
-//when using ng g c error occures because you have to module.ts fix:
+//when using ng g c error occures because you have to module.ts.   fix:
 ng g c name --module app.module
 
 
-// responsiivinen layout hommeli
+// responsiivinen layout
 npm i @angular/flex-layout --save
 

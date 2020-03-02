@@ -1,7 +1,7 @@
 <mat-tab-group *ngIf="!ongoingTraining">
     <mat-tab label="New Exercise">
-        <!-- when user presses start training button then we open current training -->
-        <app-new-training (trainingStart)="ongoingTraining = true"></app-new-training>
+        <!-- when user presses start training button in appnewtraining then we open current training -->
+        <app-new-training></app-new-training>
     </mat-tab>
     <mat-tab label="Past Exercises">
         <app-past-trainings></app-past-trainings>
@@ -9,4 +9,5 @@
 </mat-tab-group>
 
 <!-- Open current training component -->
-<app-current-training *ngIf="ongoingTraining" (trainingExit)="ongoingTraining = false"></app-current-training>
+<app-current-training *ngIf="ongoingTraining"></app-current-training>
+

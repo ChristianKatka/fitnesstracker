@@ -9,8 +9,8 @@ import { AuthService } from '../auth.service';
 })
 export class SignupComponent implements OnInit {
 
-// Biggest date you can pick from date picker (have to be 18y old)
-  maxDate
+  // Biggest date you can pick from date picker (have to be 18y old)
+  maxDate;
 
   constructor(private authService: AuthService) { }
 

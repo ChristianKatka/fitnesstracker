@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-// Material module that I use to better manage material packages
+// Material module that is used to better manage material packages
 import { MaterialModule } from './material.module';
 
 // Flexlayout for responsive layout
@@ -23,7 +23,9 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { HeaderComponent } from './navigation/header/header.component';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import { StopTrainingComponent } from './training/current-training/stop-training.component';
+
 import { AuthService } from './auth/auth.service';
+import { TrainingService } from './training/training.service';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,7 @@ import { AuthService } from './auth/auth.service';
     ReactiveFormsModule
   ],
   // So angular will always use the same instance of the service
-  providers: [AuthService],
+  providers: [AuthService, TrainingService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
