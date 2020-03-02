@@ -5,6 +5,7 @@ import { MatSort } from '@angular/material/sort';
 
 import { Exercise } from '../exercise.model';
 import { TrainingService } from '../training.service';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-past-trainings',
@@ -19,6 +20,8 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit {
 
   // Used to sort table data
   @ViewChild(MatSort) sort: MatSort;
+  // how many rows of data per page is displayd
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private trainingService: TrainingService) { }
 
@@ -29,6 +32,7 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit {
   // This function runs after page is loaded
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   /** User filter data on the table example: write crunches and table will only show crunches
