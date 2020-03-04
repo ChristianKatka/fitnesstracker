@@ -1,7 +1,7 @@
 import { Exercise } from './exercise.model';
 
 // rxjs Event emitter
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -15,16 +15,18 @@ export class TrainingService {
     exerciseChange = new Subject<Exercise>();
     // Used to show exercises in new training component. get exercises asynchronously to the list where user chooses exercise
     exercisesChange = new Subject<Exercise[]>();
+    // get passed exercises to table
+    finishedExercisesChanged = new Subject<Exercise[]>();
 
     /** Stores the exercise that user selected
     * Example: Touch-toes
     */
     private runningExercise: Exercise;
-
     private availableExercises: Exercise[] = []
 
-    // stores passed exercises (old exercises)
-    private exercises: Exercise[] = [];
+    // firebase subscriptions. Used to manage error due to logout and still having active subscriptions to the firestore db
+    private fbSubs: Subscription[] = [];
+
 
 
     constructor(private db: AngularFirestore) { }
@@ -35,24 +37,28 @@ export class TrainingService {
     fetchAvailableExercises() {
         // snapshotChanges is observable that gets availableExercise collection from firebase database
         // like touch toes, crunches etc.
-        this.db
-            .collection('availableExercises')
-            .snapshotChanges()
-            .map(docArray => {
-                return docArray.map(doc => {
-                    return {
-                        id: doc.payload.doc.id,
-                        name: doc.payload.doc.data().name,
-                        duration: doc.payload.doc.data().duration,
-                        calories: doc.payload.doc.data().calories
-                    };
-                });
-            })
-            .subscribe((exercises: Exercise[]) => {
-                this.availableExercises = exercises;
-                // emitting exercises array so new training component can subscribe to this and get all exercises asynchronously
-                this.exercisesChange.next([... this.availableExercises ])
-            });
+        this.fbSubs.push(
+            this.db
+                .collection('availableExercises')
+                .snapshotChanges()
+                .map(docArray => {
+                    return docArray.map(doc => {
+                        return {
+                            id: doc.payload.doc.id,
+                            name: doc.payload.doc.data().name,
+                            duration: doc.payload.doc.data().duration,
+                            calories: doc.payload.doc.data().calories
+                        };
+                    });
+                })
+                .subscribe((exercises: Exercise[]) => {
+                    this.availableExercises = exercises;
+                    // emitting exercises array so new training component can subscribe to this and get all exercises asynchronously
+                    this.exercisesChange.next([... this.availableExercises])
+                }, error => {
+                    console.log(error);
+                })
+        );
     }
 
     /** Starts the exercise with selected exercise by user
@@ -77,13 +83,13 @@ export class TrainingService {
      * 
      */
     completeExercise() {
-        this.exercises.push({ ... this.runningExercise, date: new Date(), state: 'completed' });
+        this.addDataToDatabase({ ... this.runningExercise, date: new Date(), state: 'completed' });
         this.runningExercise = null
         this.exerciseChange.next(null);
     }
 
     cancelExercise(progress: number) {
-        this.exercises.push({
+        this.addDataToDatabase({
             ... this.runningExercise,
             duration: this.runningExercise.duration * (progress / 100),
             calories: this.runningExercise.calories * (progress / 100),
@@ -100,11 +106,37 @@ export class TrainingService {
         return { ... this.runningExercise };
     }
 
-    /** Returns array of exercises that user has completed and or canceled
+    /** array of exercises that user has completed and or canceled
+     * valuechanges get all columns but not meta data like id
+     * 
+     * emits event of finished exercises
+     */
+    fetchCompletedOrCanceledExercises() {
+        this.fbSubs.push(
+            this.db.collection('finishedExercises').valueChanges().subscribe((exercises: Exercise[]) => {
+                this.finishedExercisesChanged.next(exercises);
+            }, error => {
+                console.log(error);
+            })
+        );
+    }
+
+
+    /** Cancel active subscriptions to the datbase after logging out
      * 
      */
-    getCompletedOrCanceledExercises() {
-        // use slice to get new copy
-        return this.exercises.slice();
+    cancelSubscriptions() {
+    // unsubscribe for every subscription in the array
+    this.fbSubs.forEach(sub => sub.unsubscribe());                
     }
+
+    /** Add excercise data to db
+     * 
+     * @param exercise name of the excercise, date etc.
+     */
+    private addDataToDatabase(exercise: Exercise) {
+        this.db.collection('finishedExercises').add(exercise);
+    }
+
+
 }

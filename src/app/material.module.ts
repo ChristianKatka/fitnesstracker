@@ -24,6 +24,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 // How many rows of data is displayd on the table and when its time to put them on different pages
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 
 @NgModule({
     imports: [
@@ -44,7 +46,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
         MatDialogModule,
         MatTableModule,
         MatSortModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        MatSnackBarModule
     ],
 
     //so we can use it outside of this component
@@ -66,7 +69,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
         MatDialogModule,
         MatTableModule,
         MatSortModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        MatSnackBarModule
     ]
 })
 

@@ -18,14 +18,16 @@
         </mat-form-field>
         <mat-form-field>
             <!-- max date that can be picked (have to be 18y old) -->
-            <input matInput placeholder="Your birth date" [matDatepicker]="picker" [max]="maxDate" ngModel name="birthdate"
-                required>
+            <input matInput placeholder="Your birth date" [matDatepicker]="picker" [max]="maxDate" ngModel
+                name="birthdate" required>
             <!-- matSuffix provides right type of styling -->
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
         <mat-checkbox ngModel name="agree" required labelPosition="before" color="primary">Agree terms and conditions
         </mat-checkbox>
-        <button type="submit" mat-raised-button color="primary" [disabled]="f.invalid">Submit</button>
+        <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary"
+            [disabled]="f.invalid">Submit</button>
+        <mat-spinner *ngIf="isLoading"></mat-spinner>
     </form>
 </section>
