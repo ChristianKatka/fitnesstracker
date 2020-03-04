@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 
 import { AngularFirestore } from '@angular/fire/firestore';
 import 'firebase/firestore';
+import { UIService } from '../shared/ui.service';
 
 // To inject angular firestore
 @Injectable()
@@ -29,12 +30,14 @@ export class TrainingService {
 
 
 
-    constructor(private db: AngularFirestore) { }
+    constructor(private db: AngularFirestore, private uiService: UIService) { }
 
     /**
      * Like: id: 'qwe2w12', name: 'Crunches', duration: 30, calories: 8
      */
     fetchAvailableExercises() {
+        // start the spinner
+        this.uiService.loadingStateChanged.next(true);
         // snapshotChanges is observable that gets availableExercise collection from firebase database
         // like touch toes, crunches etc.
         this.fbSubs.push(
@@ -42,6 +45,7 @@ export class TrainingService {
                 .collection('availableExercises')
                 .snapshotChanges()
                 .map(docArray => {
+                    // throw(new Error);
                     return docArray.map(doc => {
                         return {
                             id: doc.payload.doc.id,
@@ -55,8 +59,12 @@ export class TrainingService {
                     this.availableExercises = exercises;
                     // emitting exercises array so new training component can subscribe to this and get all exercises asynchronously
                     this.exercisesChange.next([... this.availableExercises])
+                    this.uiService.loadingStateChanged.next(false);
                 }, error => {
-                    console.log(error);
+                    this.uiService.loadingStateChanged.next(false);
+                    this.uiService.showSnackBar('Error fetching exercises from the server', null, 4000);
+                    // when exercises are null. reload exercise button shows up to user to trigger fetchAvailableExercises again
+                    this.exercisesChange.next(null);
                 })
         );
     }
@@ -126,8 +134,8 @@ export class TrainingService {
      * 
      */
     cancelSubscriptions() {
-    // unsubscribe for every subscription in the array
-    this.fbSubs.forEach(sub => sub.unsubscribe());                
+        // unsubscribe for every subscription in the array
+        this.fbSubs.forEach(sub => sub.unsubscribe());
     }
 
     /** Add excercise data to db

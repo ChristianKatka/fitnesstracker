@@ -4,7 +4,7 @@
     <mat-card-title fxLayoutAlign="center">Time to start a workout</mat-card-title>
     <mat-card-content fxLayoutAlign="center">
 
-      <mat-form-field>
+      <mat-form-field *ngIf="!isLoading && exercises">
         <mat-label>Choose exercise</mat-label>
         <mat-select ngModel name="exercise" required>
           <mat-option *ngFor="let exercise of exercises" [value]="exercise.id">
@@ -15,7 +15,10 @@
 
     </mat-card-content>
     <mat-card-actions fxLayoutAlign="center">
-      <button type="submit" [disabled]="f.invalid" mat-button>Start</button>
+      <button *ngIf="!isLoading && exercises" type="submit" [disabled]="f.invalid" mat-button>Start</button>
+      <mat-spinner *ngIf="isLoading" diameter="40"></mat-spinner>
+      <!-- Error handling button. If exercises couldnt be fetched from the server -->
+      <button *ngIf="!exercises && !isLoading" type="button" (click)="fetchExercises()" mat-button>Fetch Again</button>
     </mat-card-actions>
   </mat-card>
   </form>

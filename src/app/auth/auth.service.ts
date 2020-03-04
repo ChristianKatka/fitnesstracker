@@ -10,7 +10,6 @@ import { Subject } from 'rxjs';
 
 import { AuthData } from './auth-data.model';
 import { TrainingService } from '../training/training.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { UIService } from '../shared/ui.service';
 
 // Injectable is needed to use service in a service (router)
@@ -23,7 +22,6 @@ export class AuthService {
     constructor(private router: Router,
         private afAuth: AngularFireAuth,
         private trainingService: TrainingService,
-        private errorMsgSnackBar: MatSnackBar,
         private uiService: UIService) { }
 
     private isAuthenticated = false;
@@ -67,9 +65,7 @@ export class AuthService {
             })
             .catch(err => {
                 this.uiService.loadingStateChanged.next(false);
-                this.errorMsgSnackBar.open(err.message, null, {
-                    duration: 4000
-                });
+                this.uiService.showSnackBar(err.message, null, 4000);
                 console.log(err);
             });
     }
@@ -83,9 +79,7 @@ export class AuthService {
             })
             .catch(err => {
                 this.uiService.loadingStateChanged.next(false);
-                this.errorMsgSnackBar.open(err.message, null, {
-                    duration: 4000
-                });
+                this.uiService.showSnackBar(err.message, null, 4000);
                 console.log(err);
             });
     }
