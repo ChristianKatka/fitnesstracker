@@ -9,6 +9,16 @@ npm i --save hammerjs
 ng g c name --module app.module
 
 
+The --save option instructed NPM to include the package inside of the dependencies section of your package.json automatically
+
 // responsiivinen layout
 npm i @angular/flex-layout --save
 
+npm install --save rxjs-compat
+
+// other versios werent compatible
+npm install firebase@5.0.3 @angular/fire@5.0.2
+
+
+// Firebase code
+4/xAE4J9zFpDddUX7YhafCOkDMm9xUqya0zbo6r2D6ntBLy02i0INrqFs

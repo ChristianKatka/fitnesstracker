@@ -10,6 +10,13 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 // angular forms
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+// AngularFire
+import { AngularFireModule } from '@angular/fire'
+import { environment } from '../environments/environment';
+// firestore Database
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -49,7 +56,9 @@ import { TrainingService } from './training/training.service';
     MaterialModule,
     FlexLayoutModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule
   ],
   // So angular will always use the same instance of the service
   providers: [AuthService, TrainingService],

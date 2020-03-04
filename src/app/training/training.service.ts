@@ -2,35 +2,57 @@ import { Exercise } from './exercise.model';
 
 // rxjs Event emitter
 import { Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
 
+import { AngularFirestore } from '@angular/fire/firestore';
+import 'firebase/firestore';
 
+// To inject angular firestore
+@Injectable()
 export class TrainingService {
 
-    // rxjs event emitter. User selected some exercise. This is used to redirect user to the current training page
+    // rxjs event emitter. User selected one exercise. This is used to redirect user to the current training page
     exerciseChange = new Subject<Exercise>();
+    // Used to show exercises in new training component. get exercises asynchronously to the list where user chooses exercise
+    exercisesChange = new Subject<Exercise[]>();
 
     /** Stores the exercise that user selected
     * Example: Touch-toes
     */
     private runningExercise: Exercise;
 
-    private availableExercises: Exercise[] = [
-        { id: 'crunches', name: 'Crunches', duration: 30, calories: 8 },
-        { id: 'touch-toes', name: 'Touch Toes', duration: 180, calories: 15 },
-        { id: 'side-lunges', name: 'Side Lunges', duration: 120, calories: 18 },
-        { id: 'burpees', name: 'Burpees', duration: 60, calories: 8 }
-    ]
+    private availableExercises: Exercise[] = []
 
     // stores passed exercises (old exercises)
     private exercises: Exercise[] = [];
 
 
+    constructor(private db: AngularFirestore) { }
+
     /**
-     * Like: id: 'crunches', name: 'Crunches', duration: 30, calories: 8
+     * Like: id: 'qwe2w12', name: 'Crunches', duration: 30, calories: 8
      */
-    getAvailableExercises() {
-        //slice creates real copy of that array. Better practice
-        return this.availableExercises.slice();
+    fetchAvailableExercises() {
+        // snapshotChanges is observable that gets availableExercise collection from firebase database
+        // like touch toes, crunches etc.
+        this.db
+            .collection('availableExercises')
+            .snapshotChanges()
+            .map(docArray => {
+                return docArray.map(doc => {
+                    return {
+                        id: doc.payload.doc.id,
+                        name: doc.payload.doc.data().name,
+                        duration: doc.payload.doc.data().duration,
+                        calories: doc.payload.doc.data().calories
+                    };
+                });
+            })
+            .subscribe((exercises: Exercise[]) => {
+                this.availableExercises = exercises;
+                // emitting exercises array so new training component can subscribe to this and get all exercises asynchronously
+                this.exercisesChange.next([... this.availableExercises ])
+            });
     }
 
     /** Starts the exercise with selected exercise by user
